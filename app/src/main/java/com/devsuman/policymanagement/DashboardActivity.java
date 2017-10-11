@@ -73,8 +73,6 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         mRef = FirebaseDatabase.getInstance().getReference("Users");
-        policyDbReference = FirebaseDatabase.getInstance().getReference("Policies");
-
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -86,6 +84,7 @@ public class DashboardActivity extends AppCompatActivity {
             return;
         }
         pushFragment(new PolicyListFragment());
+        //pushFragment(new CreatePolicyFragment());
     }
 
     private void loginDialog(){
@@ -159,14 +158,6 @@ public class DashboardActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("username", userName);
         editor.commit();
-    }
-
-    private void getPolicy(){
-
-    }
-
-    private void CreatePolicy(){
-
     }
 
 }
