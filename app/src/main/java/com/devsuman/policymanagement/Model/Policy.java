@@ -68,6 +68,7 @@ public class Policy {
         Premium = premium;
     }
 
+
     public String getUserName() {
         return UserName;
     }
@@ -103,4 +104,5 @@ public class Policy {
     public Float getPremium() {
         return Premium;
     }
+
 }

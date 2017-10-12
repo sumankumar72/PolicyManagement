@@ -19,8 +19,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.devsuman.policymanagement.Model.Policy;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -183,6 +186,19 @@ public class CreatePolicyFragment extends Fragment {
                     Float.parseFloat(txtPremium.getText().toString())
             );
             //String id = policyDbReference.push().getKey();
+
+            policyDbReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Toast.makeText(getActivity(), "Policy created", Toast.LENGTH_SHORT);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getActivity(), "Policy creation cancelled", Toast.LENGTH_SHORT);
+                }
+            });
+
             policyDbReference.push().setValue(policy);
         }
         catch (Exception ex){

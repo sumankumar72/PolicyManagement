@@ -1,8 +1,11 @@
 package com.devsuman.policymanagement;
 
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ public class PolicyListFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private PolicyAdapter adapter;
+    private String username="sumankumar72@gmail.com";
+
 
     public PolicyListFragment() {
         // Required empty public constructor
@@ -58,12 +64,10 @@ public class PolicyListFragment extends Fragment {
     private void getPolicies(){
         try {
             // Read from the database
-            policyDbReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            Query query  = policyDbReference.orderByChild("userName").equalTo(username);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    //Policy value = dataSnapshot.getValue(Policy.class);
                     try {
                         for (DataSnapshot p :dataSnapshot.getChildren()){
                             Policy policy = p.getValue(Policy.class);
@@ -93,14 +97,21 @@ public class PolicyListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-
         adapter = new PolicyAdapter(policies);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         adapter.setClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-
+                FragmentManager fragmentManager = getFragmentManager();
+                if (fragmentManager != null) {
+                    FragmentTransaction ft = fragmentManager.beginTransaction();
+                    if (ft != null) {
+                        ft.replace(R.id.content, new PaymentFragment());
+                        ft.commit();
+                    }
+                }
             }
         });
     }
