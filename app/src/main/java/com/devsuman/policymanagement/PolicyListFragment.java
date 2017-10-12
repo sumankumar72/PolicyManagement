@@ -3,11 +3,15 @@ package com.devsuman.policymanagement;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.devsuman.policymanagement.Adapters.PolicyAdapter;
+import com.devsuman.policymanagement.Model.ItemClickListener;
 import com.devsuman.policymanagement.Model.Policy;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +33,11 @@ public class PolicyListFragment extends Fragment {
     private View view;
     private List<Policy> policies= new ArrayList<>();
 
+
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private PolicyAdapter adapter;
+
     public PolicyListFragment() {
         // Required empty public constructor
     }
@@ -40,6 +49,7 @@ public class PolicyListFragment extends Fragment {
         // Inflate the layout for this fragment
         policyDbReference = FirebaseDatabase.getInstance().getReference("Policies");
         view = inflater.inflate(R.layout.fragment_policy_list, container, false);
+        recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         getPolicies();
         return view;
     }
@@ -59,6 +69,7 @@ public class PolicyListFragment extends Fragment {
                             Policy policy = p.getValue(Policy.class);
                             policies.add(policy);
                         }
+                        setAdapter();
                     }catch (Exception e){
                         e.getStackTrace();
                     }
@@ -74,6 +85,24 @@ public class PolicyListFragment extends Fragment {
         catch (Exception e){
             e.getStackTrace();
         }
+    }
+
+
+    private void setAdapter()
+    {
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new PolicyAdapter(policies);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+            }
+        });
     }
 
 }
