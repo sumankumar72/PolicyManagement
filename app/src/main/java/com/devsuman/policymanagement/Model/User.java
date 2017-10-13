@@ -5,9 +5,9 @@ package com.devsuman.policymanagement.Model;
  */
 
 public class User {
-    public String UserName;
-    public String Password;
-    public String FullName;
+    private String UserName;
+    private String Password;
+    private String FullName;
 
     public User(){
     }
@@ -15,6 +15,30 @@ public class User {
     public User(String userName, String password, String fullName) {
         UserName = userName;
         Password = password;
+        FullName = fullName;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public String getPassword() {
+        return Password;
+    }
+
+    public String getFullName() {
+        return FullName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
+    public void setFullName(String fullName) {
         FullName = fullName;
     }
 }

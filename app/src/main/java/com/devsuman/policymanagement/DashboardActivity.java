@@ -22,8 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.devsuman.policymanagement.Model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class DashboardActivity extends AppCompatActivity {
     private String PREFS_NAME="PolicyManagementPref";
@@ -133,13 +136,34 @@ public class DashboardActivity extends AppCompatActivity {
                     return;
                 }
 
-                User user = new User(txtEmail.getText().toString().trim(),
-                        txtPassword.getText().toString().trim(),
-                        txtName.getText().toString().trim());
+                //String id = mRef.push().getKey();
+                //mRef.push().setValue(user);
 
-                String id = mRef.push().getKey();
-                mRef.child(id).setValue(user);
-                saveLogindetail(user.UserName);
+                mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean flag = true;
+                        for (DataSnapshot u :dataSnapshot.getChildren()) {
+                            User user1 = u.getValue(User.class);
+                            if (user1.getUserName().equals(txtEmail.getText().toString().trim())){
+                                flag = false;
+                                saveLogindetail(user1.getUserName());
+                            }
+                        }
+                        if(flag){
+                            User user = new User(txtEmail.getText().toString().trim(),
+                                    txtPassword.getText().toString().trim(),
+                                    txtName.getText().toString().trim());
+                            mRef.push().setValue(user);
+                            saveLogindetail(user.getUserName());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 dialog.dismiss();
                 pushFragment(new PolicyListFragment());
             }

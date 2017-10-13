@@ -175,7 +175,7 @@ public class CreatePolicyFragment extends Fragment {
     private void savePolicy(){
 
         try {
-            Policy policy = new Policy(username,
+            final Policy policy = new Policy(username,
                     txtPolicyNumber.getText().toString().trim(),
                     txtName.getText().toString().trim(),
                     Float.parseFloat(txtSumAssured.getText().toString()),
@@ -185,21 +185,23 @@ public class CreatePolicyFragment extends Fragment {
                     txtDoc.getText().toString().trim(),
                     Float.parseFloat(txtPremium.getText().toString())
             );
-            //String id = policyDbReference.push().getKey();
-
-            policyDbReference.addValueEventListener(new ValueEventListener() {
+            policyDbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Toast.makeText(getActivity(), "Policy created", Toast.LENGTH_SHORT);
+                    if(dataSnapshot.hasChild(policy.getPolicyNumber())){
+                        Toast.makeText(getActivity(), "Policy already added", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        policyDbReference.child(policy.getPolicyNumber()).setValue(policy);
+                        Toast.makeText(getActivity(), "Policy added successfully", Toast.LENGTH_LONG).show();;
+                    }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(getActivity(), "Policy creation cancelled", Toast.LENGTH_SHORT);
+
                 }
             });
-
-            policyDbReference.push().setValue(policy);
         }
         catch (Exception ex){
             String s = ex.getMessage();

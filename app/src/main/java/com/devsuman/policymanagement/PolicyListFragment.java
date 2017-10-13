@@ -54,6 +54,7 @@ public class PolicyListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         policyDbReference = FirebaseDatabase.getInstance().getReference("Policies");
+        policyDbReference.keepSynced(true);
         view = inflater.inflate(R.layout.fragment_policy_list, container, false);
         recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         getPolicies();
@@ -108,7 +109,8 @@ public class PolicyListFragment extends Fragment {
                 if (fragmentManager != null) {
                     FragmentTransaction ft = fragmentManager.beginTransaction();
                     if (ft != null) {
-                        ft.replace(R.id.content, new PaymentFragment());
+                        Fragment f = new PaymentFragment();
+                        ft.replace(R.id.content, f);
                         ft.commit();
                     }
                 }
